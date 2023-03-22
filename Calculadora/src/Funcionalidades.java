@@ -3,15 +3,40 @@ import java.util.StringTokenizer;
 public class Funcionalidades {
     String expresionStr = "";
     
-    public static void convertirInfix()
+    public static String infixPosfix(String expresion)
     {
+        StringBuilder cad = new StringBuilder();
+        ArrayStack<String> operadores = new ArrayStack();
+        StringTokenizer tokenizer = new StringTokenizer(expresion);
+        String token;
         
+        while(tokenizer.hasMoreTokens()) {
+            token = tokenizer.nextToken();
+            if(operador(token))
+                cad.append(token + " ");
+            else if(token.equals("("))
+                operadores.push(token);
+            else if(token.equals(")")) {
+                while(!operadores.isEmpty() && !operadores.peek().equals("("))
+                    cad.append(operadores.pop() + " ");
+                try {
+                operadores.pop();
+                } catch(RuntimeException e) {
+                    throw new RuntimeException("Error");
+                }
+            } else if(operador(token)){
+                while(!operadores.isEmpty() && !operadores.peek().equals("(") && jerarquiaOperador(token) <= jerarquiaOperador(operadores.peek()))
+                    cad.append(operadores.pop() + " ");
+                operadores.push(token);
+            }
+        }
+        while(!operadores.isEmpty())
+            cad.append(operadores.pop() + " ");
+        return cad.toString();
     }
     
-    public  boolean revisaParentesis()
+    public static boolean revisaParentesis(String expreAritStr)
     {
-        String expreAritStr= expresionStr.replace(" ", "");
-        System.out.println("    esParenteBalan() " + expreAritStr);
         int tam = expreAritStr.length();    //Tamaño de la expresionStr.
         ArrayStack <Character> stackParen= new ArrayStack(tam);
         boolean resp = true;
@@ -49,7 +74,36 @@ public class Funcionalidades {
             
         }
         return resp;
+    }
+    
+    public static boolean operador(String texto)
+    {
+        boolean resp= true;
+        String sinEsp= texto.trim();
+        if(sinEsp.length()!=1 || (sinEsp.charAt(0)>='0' && sinEsp.charAt(0)<='9'))
+        {
+            resp=false;
+        }
+    
+        return resp;
+    }
+    
+    public static int jerarquiaOperador(String operando)
+    {
+        int resp=0;
         
+        if(operando.equals("+")|| operando.equals("-"))
+        {
+            resp= 1;
+        }
+        else
+        {
+            if(operando.equals("*") || operando.equals("/"))
+            {
+                resp=2;
+            }
+        }
+        return resp;
     }
     
     /*
