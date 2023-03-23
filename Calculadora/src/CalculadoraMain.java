@@ -29,6 +29,8 @@ public class CalculadoraMain {
         
         resultado= Funcionalidades.calculaResultado(posfija);
         System.out.println("Resultado: "+resultado);
+        
+        System.out.println("eso Carlin, baila Carlin");
     }
     
 }
