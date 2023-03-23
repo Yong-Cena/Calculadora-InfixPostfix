@@ -1,39 +1,6 @@
 import Stacks.ArrayStack;
 import java.util.StringTokenizer;
 public class Funcionalidades {
-    String expresionStr = "";
-    
-    public static String infixPosfix(String expresion)
-    {
-        StringBuilder cad = new StringBuilder();
-        ArrayStack<String> operadores = new ArrayStack();
-        StringTokenizer tokenizer = new StringTokenizer(expresion);
-        String token;
-        
-        while(tokenizer.hasMoreTokens()) {
-            token = tokenizer.nextToken();
-            if(operador(token))
-                cad.append(token + " ");
-            else if(token.equals("("))
-                operadores.push(token);
-            else if(token.equals(")")) {
-                while(!operadores.isEmpty() && !operadores.peek().equals("("))
-                    cad.append(operadores.pop() + " ");
-                try {
-                operadores.pop();
-                } catch(RuntimeException e) {
-                    throw new RuntimeException("Error");
-                }
-            } else if(operador(token)){
-                while(!operadores.isEmpty() && !operadores.peek().equals("(") && jerarquiaOperador(token) <= jerarquiaOperador(operadores.peek()))
-                    cad.append(operadores.pop() + " ");
-                operadores.push(token);
-            }
-        }
-        while(!operadores.isEmpty())
-            cad.append(operadores.pop() + " ");
-        return cad.toString();
-    }
     
     public static boolean revisaParentesis(String expreAritStr)
     {
@@ -71,8 +38,41 @@ public class Funcionalidades {
         {
             stackParen.pop();
             resp=false;
-            
         }
+        return resp;
+    }
+    
+    public static String infixPosfix(String expresion)
+    {
+        ArrayStack<String> operadores = new ArrayStack();
+        String resp="";
+        StringTokenizer tokenizer = new StringTokenizer(expresion);
+        String token;
+        
+        while(tokenizer.hasMoreTokens()) {
+            token = tokenizer.nextToken();
+            if(esNumero(token))
+                resp+=token+" ";
+            else if(token.equals("("))
+                operadores.push(token);
+            else if(token.equals(")")) {
+                while(!operadores.isEmpty() && !operadores.peek().equals("("))
+                    resp+= operadores.pop() + " ";
+                try {
+                operadores.pop();
+                } catch(RuntimeException e) {
+                    throw new RuntimeException("Error");
+                }
+            } else if(operador(token)){
+                while(!operadores.isEmpty() && !operadores.peek().equals("(") && jerarquiaOperador(token) <= jerarquiaOperador(operadores.peek()))
+                {
+                    resp+= operadores.pop() + " ";
+                }
+                operadores.push(token);
+            }
+        }
+        while(!operadores.isEmpty())
+            resp+= operadores.pop() + " ";
         return resp;
     }
     
@@ -84,7 +84,19 @@ public class Funcionalidades {
         {
             resp=false;
         }
+        return resp;
+    }
     
+    public static boolean esNumero(String texto)
+    {
+        boolean resp=true;
+        
+        try{
+            Double.parseDouble(texto);
+        }catch(NumberFormatException error)
+        {
+            resp=false;
+        }
         return resp;
     }
     
@@ -102,6 +114,55 @@ public class Funcionalidades {
             {
                 resp=2;
             }
+        }
+        return resp;
+    }
+    
+    public static Double calculaResultado(String posfija)
+    {
+        ArrayStack<Double> elem= new ArrayStack<Double>();
+        Double num1, num2, resp;
+        StringTokenizer tokenizer= new StringTokenizer(posfija);
+        String token;
+        
+        while(tokenizer.hasMoreTokens())
+        {
+            token= tokenizer.nextToken();
+            if(esNumero(token))
+            {
+                elem.push(Double.parseDouble(token));
+            }
+            else
+            {
+                num2= elem.pop();
+                num1= elem.pop();
+                resp= operacion(token, num1,num2);
+                elem.push(resp);
+            }
+        }
+        return elem.pop();
+    }
+    
+    private static Double operacion(String operador, Double n1, Double n2)
+    {
+        Double resp=0.0;
+        
+        switch(operador)
+        {
+            case "+" -> resp= n1+n2;
+            case "-" -> resp= n1-n2;
+            case "*" -> resp= n1*n2;
+            case "/" -> {
+                if(n2!=0)
+                {
+                    resp= n1/n2;
+                }
+                else
+                {
+                    throw new RuntimeException("Error: division sobre 0");
+                }
+            }
+            default -> throw new RuntimeException("Error: operador no valido");
         }
         return resp;
     }

@@ -13,28 +13,22 @@ public class CalculadoraMain {
      * 
      */
     public static void main(String[] args) {
+        ArrayStack<Double> e1= new ArrayStack<Double>();
+        String expresion = " ( 1 + 2 ) * ( ( 4 + 5 / 2 ) ) - 7 ";
+        Double resultado;
         
-        //ArrayStack<String> expresion= new ArrayStack<String>();
-        String expresion = "( 1 + 2 )* ( ( 4 + 5 / 2 ) ) - 7";
-        
-        StringTokenizer tokenizer = new StringTokenizer(expresion);
+       /* StringTokenizer tokenizer = new StringTokenizer(expresion);
         String token1 = tokenizer.nextToken();
         String token2= tokenizer.nextToken();
         
         System.out.println(token1);
         System.out.println(token2);
+       */ 
+        String posfija= Funcionalidades.infixPosfix(expresion);
+        System.out.println("Posfija: "+posfija);
         
-        
- /*       ArrayStack<Integer> pilaInt1 = new ArrayStack<Integer>();
-        ArrayStack<Integer> pilaInt2 = new ArrayStack<Integer>();
-
-        pilaInt1.push(10);    pilaInt1.push(-20);
-        pilaInt1.push(100);   pilaInt1.push(40);
-        
-        pilaInt2.push(40);    pilaInt2.push(-20);
-*/        
- 
- 
+        resultado= Funcionalidades.calculaResultado(posfija);
+        System.out.println("Resultado: "+resultado);
     }
     
 }
