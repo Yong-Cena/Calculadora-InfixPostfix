@@ -45,6 +45,7 @@ public class Funcionalidades {
     public static String infixPosfix(String expresion)
     {
         ArrayStack<String> operadores = new ArrayStack();
+        ArrayStack<Double> numeros= new ArrayStack();
         String resp="";
         StringTokenizer tokenizer = new StringTokenizer(expresion);
         String token;
@@ -52,24 +53,56 @@ public class Funcionalidades {
         while(tokenizer.hasMoreTokens()) {
             token = tokenizer.nextToken();
             if(esNumero(token))
+            {
                 resp+=token+" ";
+                numeros.push(Double.parseDouble(token));
+            }
+            
             else if(token.equals("("))
+            {
                 operadores.push(token);
-            else if(token.equals(")")) {
+                while(!numeros.isEmpty())
+                {
+                    numeros.pop();
+                }
+            }
+            else if(token.equals(")")) 
+            {
                 while(!operadores.isEmpty() && !operadores.peek().equals("("))
                     resp+= operadores.pop() + " ";
                 try {
                 operadores.pop();
-                } catch(RuntimeException e) {
+                }catch(RuntimeException e) {
                     throw new RuntimeException("Error");
                 }
-            } else if(operador(token)){
+            }
+            else if(token.equals("-"))
+            {
+                if(numeros.isEmpty())
+                {
+                    double neg= Double.parseDouble(tokenizer.nextToken())*-1;
+                    resp+= neg+ " ";
+                    numeros.push(neg);
+                }
+                else
+                {
+                    while(!operadores.isEmpty() && !operadores.peek().equals("(") && jerarquiaOperador(token) <= jerarquiaOperador(operadores.peek()))
+                    {
+                    resp+= operadores.pop() + " ";
+                    }
+                    operadores.push(token);
+                }
+            }
+            else if(operador(token))
+            {
                 while(!operadores.isEmpty() && !operadores.peek().equals("(") && jerarquiaOperador(token) <= jerarquiaOperador(operadores.peek()))
                 {
                     resp+= operadores.pop() + " ";
                 }
+                numeros.pop();
                 operadores.push(token);
             }
+            
         }
         while(!operadores.isEmpty())
             resp+= operadores.pop() + " ";

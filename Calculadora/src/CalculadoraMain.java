@@ -14,7 +14,7 @@ public class CalculadoraMain {
      */
     public static void main(String[] args) {
         ArrayStack<Double> e1= new ArrayStack<Double>();
-        String expresion = " ( 1 + 2 ) * ( ( 4 + 5 / 2 ) ) - 7 ";
+        String expresion = " ( - 1 + 2 ) * ( ( 4 + 5 / 2 ) ) - 7 ";
         Double resultado;
         
        /* StringTokenizer tokenizer = new StringTokenizer(expresion);
@@ -29,8 +29,6 @@ public class CalculadoraMain {
         
         resultado= Funcionalidades.calculaResultado(posfija);
         System.out.println("Resultado: "+resultado);
-        
-        System.out.println("eso Carlin, baila Carlin");
     }
     
 }
