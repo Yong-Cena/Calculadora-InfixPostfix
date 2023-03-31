@@ -42,6 +42,25 @@ public class Funcionalidades {
         return resp;
     }
     
+    public static boolean hayMasOperador(String notacion) {
+        StringTokenizer tokenizer = new StringTokenizer(notacion);
+        boolean resp = false;
+        String elemento = tokenizer.nextToken();
+        while (tokenizer.hasMoreTokens() && resp == false) {
+            String elemento2 = tokenizer.nextToken();
+            
+            if(operador(elemento))
+            {
+                if(operador(elemento2))
+                {
+                    resp=true;
+                }
+            }
+            elemento=elemento2;
+        }
+        return resp;
+    }
+    
     public static String infixPosfix(String expresion)
     {
         ArrayStack<String> operadores = new ArrayStack();
@@ -111,11 +130,11 @@ public class Funcionalidades {
     
     public static boolean operador(String texto)
     {
-        boolean resp= true;
+        boolean resp= false;
         String sinEsp= texto.trim();
-        if(sinEsp.length()!=1 || (sinEsp.charAt(0)>='0' && sinEsp.charAt(0)<='9'))
+        if(sinEsp.equals("+") || sinEsp.equals("-") || sinEsp.equals("*") || sinEsp.equals("^") || sinEsp.equals("-"))
         {
-            resp=false;
+            resp=true;
         }
         return resp;
     }

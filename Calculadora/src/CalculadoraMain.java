@@ -17,18 +17,15 @@ public class CalculadoraMain {
         String expresion = " ( - 1 + 2 ) * ( ( 4 + 5 / 2 ) ) - 7 ";
         Double resultado;
         
-       /* StringTokenizer tokenizer = new StringTokenizer(expresion);
-        String token1 = tokenizer.nextToken();
-        String token2= tokenizer.nextToken();
+       
+        System.out.println(Funcionalidades.hayMasOperador(expresion));
         
-        System.out.println(token1);
-        System.out.println(token2);
-       */ 
         String posfija= Funcionalidades.infixPosfix(expresion);
         System.out.println("Posfija: "+posfija);
         
         resultado= Funcionalidades.calculaResultado(posfija);
         System.out.println("Resultado: "+resultado);
+
     }
     
 }
