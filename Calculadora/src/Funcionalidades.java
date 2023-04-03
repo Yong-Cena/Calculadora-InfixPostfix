@@ -2,6 +2,36 @@ import Stacks.ArrayStack;
 import java.util.StringTokenizer;
 public class Funcionalidades {
     
+    /**
+     * Método que revisa que la expresion escrita por el usuario sea valida 
+     * @param expreAritStr expresión 
+     * @return regresa una excepcion si la expresion esta mal escrita
+     **/
+    public static void revisaExpresion(String expreAriStr)
+    {
+        if(expreAriStr==null || expreAriStr.trim().length()==1)
+        {
+            throw new RuntimeException("Syntax error");
+        }
+        
+        if(revisaParentesis(expreAriStr))
+        {
+            if(hayMasOperador(expreAriStr))
+            {
+                throw new RuntimeException("Syntax error");
+            }
+        }
+        else
+        {
+            throw new RuntimeException("Syntax error");
+        }
+    }
+    
+     /**
+     * Método que revisa que los parentesis estén bien colocados
+     * @param expreAritStr expresión 
+     * @return Regresa true si los parentesis estan bien colocados. False en caso de que no se cierre un parentesis.
+     **/
     public static boolean revisaParentesis(String expreAritStr)
     {
         int tam = expreAritStr.length();    //Tamaño de la expresionStr.
@@ -42,25 +72,11 @@ public class Funcionalidades {
         return resp;
     }
     
-    public static boolean hayMasOperador(String notacion) {
-        StringTokenizer tokenizer = new StringTokenizer(notacion);
-        boolean resp = false;
-        String elemento = tokenizer.nextToken();
-        while (tokenizer.hasMoreTokens() && resp == false) {
-            String elemento2 = tokenizer.nextToken();
-            
-            if(operador(elemento))
-            {
-                if(operador(elemento2))
-                {
-                    resp=true;
-                }
-            }
-            elemento=elemento2;
-        }
-        return resp;
-    }
-    
+        /**
+     * Método que convierte una cadena de texto a notación posfija.
+     * @param expresion Cadena de texto en notación infija
+     * @return Regresa la cadena de texto en notación posfija.
+     **/
     public static String infixPosfix(String expresion)
     {
         ArrayStack<String> operadores = new ArrayStack();
@@ -127,18 +143,31 @@ public class Funcionalidades {
             resp+= operadores.pop() + " ";
         return resp;
     }
+
     
+    
+        /**
+     * Método que revisa si una cadena de texto es un operador.
+     * @param texto Cadena de texto
+     * @return Regresa verdadero si el texto es un operador ('+', '-', '*', ´/´). 
+     * Regresa falso si el texto ingresado no es un operador.
+     **/
     public static boolean operador(String texto)
     {
         boolean resp= false;
         String sinEsp= texto.trim();
-        if(sinEsp.equals("+") || sinEsp.equals("-") || sinEsp.equals("*") || sinEsp.equals("^") || sinEsp.equals("-"))
+        if(sinEsp.equals("+") || sinEsp.equals("-") || sinEsp.equals("*") || sinEsp.equals("^") || sinEsp.equals("/"))
         {
             resp=true;
         }
         return resp;
     }
     
+        /**
+     * Métodoque revisa que una cadena de texto sea un numero
+     * @param texto Cadena de texto
+     * @return Regresa verdadero si el texto es un número, regresa falso en caso contrario
+     **/
     public static boolean esNumero(String texto)
     {
         boolean resp=true;
@@ -152,6 +181,12 @@ public class Funcionalidades {
         return resp;
     }
     
+        /**
+     * Método que asigna de jerarquía de operaciones 
+     * @param operador operador ('+', '-', '*', ´/´).
+     * @return Regresa 1 si los operadores son '+' o '-'. Regresa 2 si el operador es
+     *  '*' o '/'. Regresa 0, si no es ninguno de los operadores anteriores
+     **/
     public static int jerarquiaOperador(String operando)
     {
         int resp=0;
@@ -160,15 +195,23 @@ public class Funcionalidades {
         {
             resp= 1;
         }
-        else
-        {
-            if(operando.equals("*") || operando.equals("/"))
+        else if(operando.equals("*") || operando.equals("/"))
             {
                 resp=2;
             }
-        }
+        
+        else if(operando.equals("^"))
+            {
+                resp=3;
+            }
         return resp;
     }
+    
+        /**
+     * Método que calcula el resultado a partir de una cadena en notación posfija
+     * @param posfija Expresión a calcular en notación posfija
+     * @return Regresa el resultado de la operación
+     **/
     
     public static Double calculaResultado(String posfija)
     {
@@ -195,52 +238,82 @@ public class Funcionalidades {
         return elem.pop();
     }
     
+        /**
+     * Método que realiza una operación entre dos números enteros.
+     * @param operador Operador que realizara el método: '+', '-', '*', ´/´
+     * @param n1 Primer numerod de la operación
+     * @param n2 Segundo numero de la operación
+     * @return Resultado de la operación entre n1 y n2
+     * @throws RuntimeException Error: division sobre 0
+     **/
     private static Double operacion(String operador, Double n1, Double n2)
     {
         Double resp=0.0;
         
         switch(operador)
         {
-            case "+" -> resp= n1+n2;
-            case "-" -> resp= n1-n2;
-            case "*" -> resp= n1*n2;
-            case "/" -> {
+            case "+":
+            resp=n1+n2;
+            break;
+            case "-":
+            resp=n1-n2;
+            break;
+            case "*":
+            resp=n1*n2;
+            break;
+            case "/": {
                 if(n2!=0)
                 {
                     resp= n1/n2;
                 }
                 else
                 {
-                    throw new RuntimeException("Error: division sobre 0");
+                    throw new ArithmeticException("Error: division sobre 0");
                 }
             }
-            default -> throw new RuntimeException("Error: operador no valido");
+            break;
+            case "^":
+            resp= Math.pow(n1, n2);
         }
         return resp;
     }
+
     
-    /*
-    private static <T> boolean elemEnPila(ArrayStack<T> pila1, T elem2) {
-        if (pila1 == null) throw new
-                RuntimeException("(elemEnPila) pila1 o pila2: null.\n");
-
-        boolean estap1= false;
-        T elem1 = null;
-        ArrayStack<T> paux1= new ArrayStack<T>();
-
-        //"Ve" si el elem2 esta en la pila1.
-        while ( !pila1.isEmpty() && estap1==false){
-            elem1 = pila1.pop();
-            paux1.push(elem1);  // Vaciando pila1
-            estap1=elem2.equals(elem1);
-        }
-
-        // Regresa pila1 a su estado original.
-        while ( !paux1.isEmpty() ) {
-            pila1.push(paux1.pop());  // Rellena pila1 completa
-        } 
+    /**
+     * Método que revisa que no haya más de un operador consecutivo en la operación.
+     * @param notacion Cadena en notación infija.
+     * @return Regresa verdadero, en caso que no haya más de un operador consecutivo. 
+     * Regresa falso si hay más de un operador consecutivo.
+     **/    
+     public static boolean hayMasOperador(String notacion) {
         
-        return estap1;
+        StringTokenizer tokenizer = new StringTokenizer(notacion);
+        boolean resp = false;
+        String elemento = tokenizer.nextToken();
+
+        while (tokenizer.hasMoreTokens() && resp == false) {
+            String elemento2 = tokenizer.nextToken();
+            if(elemento.equals("-"))
+            {
+                if(operador(elemento2))
+                {
+                    resp=true;
+                }
+            }
+            else
+            {
+                if(operador(elemento))
+                {
+                    if (elemento2.equals("+") || 
+                            elemento2.equals("*")|| elemento2.equals("/") || 
+                            elemento2.equals("^")) {
+                        resp=true;
+                    }
+                }
+            }
+            elemento = elemento2;
+        }
+        return resp;
     }
-    */
+
 }
